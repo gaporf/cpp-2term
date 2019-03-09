@@ -42,23 +42,23 @@ _start:
 ; rcx -- length
 
 copy_long:
-	push		rdi
-	push		r9
-	push		rcx
-	push		rax
+		push		rdi
+		push		r9
+		push		rcx
+		push		rax
 .loop:
-	mov		rax,		[rdi]
-	mov		[r9], 		rax
-	lea		r9,		[r9 + 8]
-	lea		rdi,		[rdi + 8]
-	dec		rcx
-	jnz 		.loop
+		mov		rax,		[rdi]
+		mov		[r9], 		rax
+		lea		r9,		[r9 + 8]
+		lea		rdi,		[rdi + 8]
+		dec		rcx
+		jnz 		.loop
 
-	pop		rax
-	pop		rcx
-	pop		r9
-	pop		rdi
-	ret
+		pop		rax
+		pop		rcx
+		pop		r9
+		pop		rdi
+		ret
 	
 mul_long_long:
 		push		rdi
