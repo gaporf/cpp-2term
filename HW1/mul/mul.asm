@@ -15,8 +15,14 @@ _start:
 		lea		r9,		[rsp + 2 * 128 * 8]
 
 ; r9 -- [rsp + 2 * 128 * 8]
-
+		mov		r15,		rdi
+		mov		r14,		rsi
+		mov		rsi,		rdi
+		mov		rdi,		r9
 		call		copy_long
+		mov		r9,		rdi
+		mov		rdi,		r15
+		mov		rsi,		r14
 
 		lea		r10,		[rsp + 3 * 128 * 8]
 
@@ -37,26 +43,26 @@ _start:
 
 		jmp		exit
 
-; rdi -- src
-; r9 -- dst
-; rcx -- length
+; rsi -- src
+; rdi -- dst
+; rcx -- lengthi
 
 copy_long:
 		push		rdi
-		push		r9
+		push		rsi
 		push		rcx
 		push		rax
 .loop:
-		mov		rax,		[rdi]
-		mov		[r9], 		rax
-		lea		r9,		[r9 + 8]
+		mov		rax,		[rsi]
+		mov		[rdi], 		rax
 		lea		rdi,		[rdi + 8]
+		lea		rsi,		[rsi + 8]
 		dec		rcx
 		jnz 		.loop
 
 		pop		rax
 		pop		rcx
-		pop		r9
+		pop		rsi
 		pop		rdi
 		ret
 	
@@ -87,10 +93,13 @@ mul_long_long:
 		mov		rbx, 		0x100000000
 		call		mul_long_short
 		call		mul_long_short
-		mov		r9,		r15
-		call		copy_long
+		
+		mov		r14,		rsi
+		mov		rsi,		rdi
 		mov		r9,		rdi
 		mov		rdi,		r15
+		call		copy_long
+		mov		rsi,		r14
 		
 		dec		rcx
 		jnz		.loop
@@ -98,11 +107,10 @@ mul_long_long:
 		pop		rcx
 		push		rcx
 
-		mov		r15,		rdi
-		mov		r9,		rdi
-		mov		rdi,		r10
+		mov		r15,		rsi
+		mov		rsi,		r10
 		call 		copy_long
-		mov		rdi,		r15
+		mov		rsi,		r15
 	
 		pop		rcx
 		pop		rsi
