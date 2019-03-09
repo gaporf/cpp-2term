@@ -2,19 +2,23 @@
 
 		global		_start
 _count:
+		mov		r11,		1
 .loop:
 		dec		rax
-		cmp		[buf+rax],	r12b
+		cmp		[buf+rax],	r12b ; 9
 		jl		.first
-		cmp		[buf+rax],	r13b
+		cmp		[buf+rax],	r13b ; 13
 		jg		.first
 		cmp		r11,		1
+
+; r11 -- was last char whitespace
+
 		je		.end_loop
 		inc		r15
 		mov		r11, 		1
 		jmp		.end_loop
 .first:		
-		cmp		[buf+rax],	r14b
+		cmp		[buf+rax],	r14b ; 32
 		jne		.second
 		cmp		r11,	1
 		je		.end_loop
@@ -26,6 +30,7 @@ _count:
 .end_loop:
 		cmp		rax,		0
 		jg		.loop
+		xor		r11,		r11
 		ret
 
 _print_number:
@@ -89,13 +94,6 @@ _start:
 		call		_count
 		jmp		.loop
 
-_end:
-		call		_print_number
-
-		mov		rax,		60
-		xor		rdi, 		rdi
-		syscall
-
 _error:
 		mov		rax,		1
 		mov		rdi,		2
@@ -103,9 +101,16 @@ _error:
 		mov		rdx,		msg_size
 		syscall
 
+_end:
+		call		_print_number
+
+		mov		rax,		60
+		xor		rdi,		rdi
+		syscall
+
 		section		.rodata
-error_msg:	db	"Invalid number of arguments", 0x0a
-msg_size:	equ	$ - error_msg
+error_msg:	db		"Invalid number of arguments", 0x0a
+msg_size:	equ		$ - error_msg
 		
 		section		.bss
 
