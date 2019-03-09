@@ -3,11 +3,12 @@
 		global		_start
 _count:
 		mov		r11,		1
+		xor		r8,		r8
 .loop:
 		dec		rax
-		cmp		[buf+rax],	r12b ; 9
+		cmp		[buf+r8],	r12b ; 9
 		jl		.first
-		cmp		[buf+rax],	r13b ; 13
+		cmp		[buf+r8],	r13b ; 13
 		jg		.first
 		cmp		r11,		1
 
@@ -18,7 +19,7 @@ _count:
 		mov		r11, 		1
 		jmp		.end_loop
 .first:		
-		cmp		[buf+rax],	r14b ; 32
+		cmp		[buf+r8],	r14b ; 32
 		jne		.second
 		cmp		r11,	1
 		je		.end_loop
@@ -28,6 +29,7 @@ _count:
 .second:
 		xor		r11,		r11
 .end_loop:
+		inc		r8
 		cmp		rax,		0
 		jg		.loop
 		xor		r11,		r11
