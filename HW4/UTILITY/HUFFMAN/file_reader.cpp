@@ -19,6 +19,7 @@ file_reader::~file_reader() {
     if (fd != -1) {
         close(fd);
     }
+    fd = -1;
 }
 
 size_t file_reader::get_char(size_t N, char *buf) {
@@ -33,6 +34,7 @@ void file_reader::close_file() {
     if (fd != -1) {
         close(fd);
     }
+    fd = -1;
 }
 
 void file_reader::open_file(std::string const &file_name) {

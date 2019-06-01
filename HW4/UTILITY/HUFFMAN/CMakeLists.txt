@@ -16,4 +16,8 @@ add_library(HUFFMAN
         decoder.h
         decoder.cpp
         tree.h
-        tree.cpp)
+        tree.cpp
+        file_writer.h
+        file_writer.cpp
+        file_reader.h
+        file_reader.cpp)

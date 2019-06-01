@@ -57,5 +57,7 @@ int compress(std::string const &file_in, std::string const &file_out) {
         char c = data.get_tail();
         out.put_char(1, &c);
     }
+    in.close_file();
+    out.close_file();
     return 0;
 }

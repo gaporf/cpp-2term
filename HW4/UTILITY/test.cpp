@@ -34,6 +34,8 @@ int coincidence(std::string const &first, std::string const &second) {
             break;
         }
     }
+    f1.close_file();
+    f2.close_file();
     return 1;
 }
 
@@ -47,9 +49,10 @@ void get_random(std::string const &first) {
         }
         out.put_char(N, symbols.data());
     }
+    out.close_file();
 }
 
-int test(std::string first, std::string second) {
+int test(std::string const &first, std::string const &second) {
     srand(time(nullptr));
     std::string midle = "temp.txt";
     std::cout << "Start random tests" << std::endl;

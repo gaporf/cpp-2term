@@ -9,6 +9,6 @@
 
 int coincidence(std::string const &first, std::string const &second);
 
-int test(std::string first, std::string second);
+int test(std::string const &first, std::string const &second);
 
 #endif //UTILITY_TEST_H

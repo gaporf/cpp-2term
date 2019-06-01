@@ -19,6 +19,7 @@ file_writer::~file_writer() {
     if (fd != -1) {
         close(fd);
     }
+    fd = -1;
 }
 
 void file_writer::put_char(size_t N, char const *buf) {
@@ -33,6 +34,7 @@ void file_writer::close_file() {
     if (fd != -1) {
         close(fd);
     }
+    fd = -1;
 }
 
 void file_writer::open_file(std::string const &file_name) {

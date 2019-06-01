@@ -15,7 +15,7 @@
 int decompress(std::string const &file_in, std::string const &file_out) {
     file_reader in(file_in);
     if (!in.is_open()) {
-        std::cerr << "Could not open_file the file " << file_in.c_str() << std::endl;
+        std::cerr << "Could not open the file " << file_in.c_str() << std::endl;
         return 2;
     }
     decoder data;
