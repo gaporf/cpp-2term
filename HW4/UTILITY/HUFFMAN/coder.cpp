@@ -39,7 +39,7 @@ void coder::code(size_t n, char *str, std::vector<char> &cur) {
 
 std::string coder::long_code() {
     for (size_t i = 0; i < 255; i++) {
-        if (ans[i].length() > 8) {
+        if (ans[i].length() > 7) {
             return ans[i];
         }
     }
