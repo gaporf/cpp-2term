@@ -23,7 +23,7 @@ struct decoder {
 private:
     tree *root;
 
-    void add(tree *cur, std::string &code, size_t pos, uint8_t c);
+    int add(tree *cur, std::string &code, size_t pos, uint8_t c);
 };
 
 #endif //HUFFMAN_DECODER_H

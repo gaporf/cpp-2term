@@ -23,8 +23,8 @@ int decompress(std::string const &file_in, std::string const &file_out) {
     if (check != 0) {
         return check;
     }
-    std::vector<char> symbols;
     const size_t N = 1024;
+    std::vector<char> symbols(N);
     file_writer out(file_out);
     if (!out.is_open()) {
         std::cerr << "Could not write the file " << file_out << std::endl;
@@ -42,6 +42,9 @@ int decompress(std::string const &file_in, std::string const &file_out) {
             }
         }
         auto res = data.decode(code);
+        if (res.first.empty() && res.second.empty()) {
+            return 2;
+        }
         out.put_char(res.first.size(), res.first.data());
         code = res.second;
     }

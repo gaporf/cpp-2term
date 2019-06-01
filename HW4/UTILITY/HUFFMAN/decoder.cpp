@@ -5,7 +5,7 @@
 #include "decoder.h"
 #include "tree.h"
 
-decoder::decoder() : root(nullptr) {}
+decoder::decoder() : root(new tree(nullptr, nullptr)) {}
 
 decoder::~decoder() {
     delete root;
@@ -46,14 +46,17 @@ int decoder::init(file_reader &fr) {
         std::cerr << "File damaged" << std::endl;
         return 2;
     }
+    for (size_t i = 0; i < 256; i++) {
+        add(root, codes[i], 0, i);
+    }
     return 0;
 }
 
-void decoder::add(tree *cur, std::string &code, size_t pos, uint8_t c) {
+int decoder::add(tree *cur, std::string &code, size_t pos, uint8_t c) {
     if (pos == code.length()) {
         if (cur->is_final) {
             std::cerr << "File damaged" << std::endl;
-            exit(5);
+            return 2;
         }
         cur->is_final = true;
         cur->symbol = c;
@@ -70,6 +73,7 @@ void decoder::add(tree *cur, std::string &code, size_t pos, uint8_t c) {
             add(cur->next_level.second, code, pos + 1, c);
         }
     }
+    return 0;
 }
 
 std::pair<std::vector<char>, std::vector<char>> decoder::decode(const std::vector<char> &code) {
@@ -83,8 +87,9 @@ std::pair<std::vector<char>, std::vector<char>> decoder::decode(const std::vecto
             cur_tree = cur_tree->next_level.second;
         }
         if (cur_tree == nullptr) {
-            std::cerr << "file damaged" << std::endl;
-            exit(5);
+            std::cerr << "File damaged" << std::endl;
+            return {{},
+                    {}};
         } else if (cur_tree->is_final) {
             ans_str.push_back(cur_tree->symbol);
             cur.clear();
