@@ -17,6 +17,10 @@ decoder::~decoder() {
 
 void decoder::add(tree *cur, std::string &code, size_t pos, uint8_t c) {
     if (pos == code.length()) {
+        if (cur->is_final) {
+            std::cerr << "File damaged" << std::endl;
+            exit(5);
+        }
         cur->is_final = true;
         cur->symbol = c;
     } else {
