@@ -36,9 +36,10 @@ int decompress(std::string const &file_in, std::string const &file_out) {
             break;
         }
         for (size_t i = 0; i < n; i++) {
-            auto v = get_string(symbols[i]);
-            for (char j : v) {
-                code.push_back(j);
+            uint8_t c = symbols[i];
+            for (size_t i = 128; i > 0; i /= 2) {
+                code.push_back('0' + c / i);
+                c %= i;
             }
         }
         auto res = data.decode(code);
@@ -49,13 +50,4 @@ int decompress(std::string const &file_in, std::string const &file_out) {
         code = res.second;
     }
     return 0;
-}
-
-std::string get_string(uint8_t c) {
-    std::string str;
-    for (size_t i = 128; i > 0; i /= 2) {
-        str += static_cast<char>('0' + c / i);
-        c %= i;
-    }
-    return str;
 }
