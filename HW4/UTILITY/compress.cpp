@@ -8,8 +8,8 @@
 
 #include "compress.h"
 #include "HUFFMAN/coder.h"
-#include "file_reader.h"
-#include "file_writer.h"
+#include "HUFFMAN/file_reader.h"
+#include "HUFFMAN/file_writer.h"
 
 int compress(std::string const &file_in, std::string const &file_out) {
     file_reader in(file_in);

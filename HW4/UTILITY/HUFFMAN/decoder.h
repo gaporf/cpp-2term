@@ -7,13 +7,16 @@
 
 #include <vector>
 #include <string>
+#include "file_reader.h"
 
 struct tree;
 
 struct decoder {
-    explicit decoder(std::vector<std::string> &codes);
+    explicit decoder();
 
     ~decoder();
+
+    int init(file_reader &fr);
 
     std::pair<std::vector<char>, std::vector<char>> decode(const std::vector<char>& code);
 

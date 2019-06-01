@@ -9,8 +9,8 @@
 #include "decompress.h"
 #include "HUFFMAN/coder.h"
 #include "HUFFMAN/decoder.h"
-#include "file_reader.h"
-#include "file_writer.h"
+#include "HUFFMAN/file_reader.h"
+#include "HUFFMAN/file_writer.h"
 
 int decompress(std::string const &file_in, std::string const &file_out) {
     file_reader in(file_in);
@@ -18,49 +18,20 @@ int decompress(std::string const &file_in, std::string const &file_out) {
         std::cerr << "Could not open_file the file " << file_in.c_str() << std::endl;
         return 2;
     }
-    std::string num;
-    for (;;) {
-        char c;
-        size_t n = in.get_char(1, &c);
-        if (n == 0) {
-            std::cerr << "File damaged " << file_in.c_str() << std::endl;
-            return 2;
-        } else if (c == '\n') {
-            break;
-        } else {
-            num += c;
-        }
+    decoder data;
+    int check = data.init(in);
+    if (check != 0) {
+        return check;
     }
-    size_t N = std::stoi(num);
-    std::vector<char> symbols(N);
-    size_t n = in.get_char(N, symbols.data());
-    if (n != N) {
-        std::cerr << "File damaged " << file_in.c_str() << std::endl;
-        return 2;
-    }
-    std::vector<std::string> codes;
-    std::string cur;
-    for (size_t i = 0; i < n; i++) {
-        if (symbols[i] != '\n') {
-            cur += symbols[i];
-        } else {
-            codes.push_back(cur);
-            cur = "";
-        }
-    }
-    if (codes.size() != 256) {
-        std::cerr << "File damaged " << file_in.c_str() << std::endl;
-        return 2;
-    }
-    decoder data(codes);
-    N = 1024;
+    std::vector<char> symbols;
+    const size_t N = 1024;
     file_writer out(file_out);
     if (!out.is_open()) {
         std::cerr << "Could not write the file " << file_out << std::endl;
         return 2;
     }
     for (std::vector<char> code;;) {
-        n = in.get_char(N, symbols.data());
+        size_t n = in.get_char(N, symbols.data());
         if (n == 0) {
             break;
         }

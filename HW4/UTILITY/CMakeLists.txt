@@ -20,9 +20,9 @@ add_executable(UTILITY
         decompress.cpp
         test.h
         test.cpp
-        file_reader.h
-        file_reader.cpp
-        file_writer.h
-        file_writer.cpp)
+        HUFFMAN/file_reader.h
+        HUFFMAN/file_reader.cpp
+        HUFFMAN/file_writer.h
+        HUFFMAN/file_writer.cpp)
 
 target_link_libraries(UTILITY HUFFMAN)

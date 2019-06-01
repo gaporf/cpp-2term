@@ -7,8 +7,8 @@
 #include <vector>
 #include <iostream>
 
-#include "file_reader.h"
-#include "file_writer.h"
+#include "HUFFMAN/file_reader.h"
+#include "HUFFMAN/file_writer.h"
 #include "compress.h"
 #include "decompress.h"
 

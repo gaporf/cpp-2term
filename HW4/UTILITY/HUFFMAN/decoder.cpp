@@ -5,14 +5,48 @@
 #include "decoder.h"
 #include "tree.h"
 
-decoder::decoder(std::vector<std::string> &codes) : root(new tree(nullptr, nullptr)) {
-    for (size_t i = 0; i < 256; i++) {
-        add(root, codes[i], 0, i);
-    }
-}
+decoder::decoder() : root(nullptr) {}
 
 decoder::~decoder() {
     delete root;
+}
+
+int decoder::init(file_reader &fr) {
+    std::string num;
+    for (;;) {
+        char c;
+        size_t n = fr.get_char(1, &c);
+        if (n == 0) {
+            std::cerr << "File damaged" << std::endl;
+            return 2;
+        } else if (c == '\n') {
+            break;
+        } else {
+            num += c;
+        }
+    }
+    size_t N = std::stoi(num);
+    std::vector<char> symbols(N);
+    size_t n = fr.get_char(N, symbols.data());
+    if (n != N) {
+        std::cerr << "File damaged" << std::endl;
+        return 2;
+    }
+    std::vector<std::string> codes;
+    std::string cur;
+    for (size_t i = 0; i < n; i++) {
+        if (symbols[i] != '\n') {
+            cur += symbols[i];
+        } else {
+            codes.push_back(cur);
+            cur = "";
+        }
+    }
+    if (codes.size() != 256) {
+        std::cerr << "File damaged" << std::endl;
+        return 2;
+    }
+    return 0;
 }
 
 void decoder::add(tree *cur, std::string &code, size_t pos, uint8_t c) {
@@ -38,7 +72,7 @@ void decoder::add(tree *cur, std::string &code, size_t pos, uint8_t c) {
     }
 }
 
-std::pair<std::vector<char>, std::vector<char>> decoder::decode(const std::vector<char>& code) {
+std::pair<std::vector<char>, std::vector<char>> decoder::decode(const std::vector<char> &code) {
     std::vector<char> ans_str,
             cur;
     auto cur_tree = root;
