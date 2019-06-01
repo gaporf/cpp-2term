@@ -14,7 +14,7 @@ coder::~coder() {
 
 void coder::add(size_t n, char *str) {
     for (size_t i = 0; i < n; i++) {
-        count[static_cast<uint8_t>(str[i])]++;
+        count[static_cast<size_t>(static_cast<uint8_t>(str[i]))]++;
     }
 }
 

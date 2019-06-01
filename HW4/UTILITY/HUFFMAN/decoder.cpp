@@ -16,7 +16,7 @@ int decoder::init(file_reader &fr) {
     for (;;) {
         char c;
         size_t n = fr.get_char(1, &c);
-        if (n == 0) {
+        if (n == 0 || n == -1) {
             std::cerr << "File damaged" << std::endl;
             return 2;
         } else if (c == '\n') {
