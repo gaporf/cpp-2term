@@ -63,14 +63,6 @@ void get_random(std::string first) {
 void test(std::string first, std::string second) {
     srand(time(nullptr));
     std::string midle = "temp.txt";
-    compress(first, midle);
-    decompress(midle, second);
-    if (!coincidence(first, second)) {
-        std::cout << "Error" << std::endl;
-        exit(20);
-    } else {
-        std::cout << "Ok" << std::endl;
-    }
     std::cout << "Start random tests" << std::endl;
     for (size_t i = 0; i < 100; i++) {
         get_random(first);
@@ -79,6 +71,8 @@ void test(std::string first, std::string second) {
         if (!coincidence(first, second)) {
             std::cout << "Error" << std::endl;
             exit(20);
+        } else {
+            std::cout << "Ok" << std::endl;
         }
     }
     std::cout << "All random tests are completed!" << std::endl;
