@@ -1,0 +1,2 @@
+/usr/bin/ar qc libHUFFMAN.a  CMakeFiles/HUFFMAN.dir/coder.cpp.o CMakeFiles/HUFFMAN.dir/decoder.cpp.o CMakeFiles/HUFFMAN.dir/tree.cpp.o
+/usr/bin/ranlib libHUFFMAN.a
