@@ -16,14 +16,18 @@ int main(int argc, char **argv) {
             file_out = argv[3];
     if (mode != "-c" && mode != "-d" && mode != "-t") {
         std::cerr << R"(The mode should be "-c" (compress) or "-d" (decompress) or "-t" (test))" << std::endl;
-        return 2;
+        return 1;
     }
+    int error;
     if (mode == "-c") {
-        compress(file_in, file_out);
+        error = compress(file_in, file_out);
     } else if (mode == "-d") {
-        decompress(file_in, file_out);
+        error = decompress(file_in, file_out);
     } else {
-        test(file_in, file_out);
+        error = test(file_in, file_out);
+    }
+    if (error != 0) {
+        return error;
     }
     clock_t end = clock();
     std::cout << "Time: " << static_cast<double>(end - start) / CLOCKS_PER_SEC << " s" << std::endl;

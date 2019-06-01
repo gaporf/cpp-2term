@@ -3,6 +3,8 @@ project(UTILITY)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_subdirectory(HUFFMAN)
+
 include_directories(${UTILITY_SOURCE_DIR})
 
 if (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
@@ -18,9 +20,9 @@ add_executable(UTILITY
         decompress.cpp
         test.h
         test.cpp
-        HUFFMAN/coder.h
-        HUFFMAN/coder.cpp
-        HUFFMAN/decoder.h
-        HUFFMAN/decoder.cpp
-        HUFFMAN/tree.h
-        HUFFMAN/tree.cpp)
+        file_reader.h
+        file_reader.cpp
+        file_writer.h
+        file_writer.cpp)
+
+target_link_libraries(UTILITY HUFFMAN)

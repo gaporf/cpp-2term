@@ -4,28 +4,27 @@
 
 #include <cstring>
 #include <vector>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <iostream>
 
 #include "decompress.h"
+#include "HUFFMAN/coder.h"
 #include "HUFFMAN/decoder.h"
+#include "file_reader.h"
+#include "file_writer.h"
 
-void decompress(std::string &file_in, std::string &file_out) {
-    int32_t rd = open(file_in.c_str(), O_RDONLY);
-    if (rd == -1) {
-        std::cerr << "Could not open the file " << file_in.c_str() << std::endl;
-        exit(1);
+int decompress(std::string &file_in, std::string &file_out) {
+    file_reader in(file_in);
+    if (!in.is_open()) {
+        std::cerr << "Could not open_file the file " << file_in.c_str() << std::endl;
+        return 2;
     }
     std::string num;
     for (;;) {
         char c;
-        size_t n = read(rd, &c, 1);
+        size_t n = in.get_char(1, &c);
         if (n == 0) {
             std::cerr << "File damaged " << file_in.c_str() << std::endl;
-            exit(1);
+            return 2;
         } else if (c == '\n') {
             break;
         } else {
@@ -34,10 +33,10 @@ void decompress(std::string &file_in, std::string &file_out) {
     }
     size_t N = std::stoi(num);
     std::vector<char> symbols(N);
-    size_t n = read(rd, symbols.data(), N);
+    size_t n = in.get_char(N, symbols.data());
     if (n != N) {
         std::cerr << "File damaged " << file_in.c_str() << std::endl;
-        exit(1);
+        return 2;
     }
     std::vector<std::string> codes;
     std::string cur;
@@ -51,34 +50,31 @@ void decompress(std::string &file_in, std::string &file_out) {
     }
     if (codes.size() != 256) {
         std::cerr << "File damaged " << file_in.c_str() << std::endl;
-        exit(1);
+        return 2;
     }
     decoder data(codes);
     N = 1024;
-    int32_t wd = open(file_out.c_str(), O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    close(wd);
-    wd = open(file_out.c_str(), O_WRONLY | O_TRUNC);
-    if (wd == -1) {
+    file_writer out(file_out);
+    if (!out.is_open()) {
         std::cerr << "Could not write the file " << file_out << std::endl;
-        exit(4);
+        return 2;
     }
     for (std::vector<char> code;;) {
-        n = read(rd, symbols.data(), N);
+        n = in.get_char(N, symbols.data());
         if (n == 0) {
             break;
         }
         for (size_t i = 0; i < n; i++) {
             auto v = get_string(symbols[i]);
-            for (size_t j = 0; j < v.length(); j++) {
-                code.push_back(v[j]);
+            for (char j : v) {
+                code.push_back(j);
             }
         }
         auto res = data.decode(code);
-        write(wd, res.first.data(), res.first.size());
+        out.put_char(res.first.size(), res.first.data());
         code = res.second;
     }
-    close(wd);
-    close(rd);
+    return 0;
 }
 
 std::string get_string(uint8_t c) {

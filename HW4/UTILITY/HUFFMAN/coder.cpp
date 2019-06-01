@@ -6,7 +6,7 @@
 #include "tree.h"
 #include <set>
 
-coder::coder() : count(256, 0), ans(256), root(nullptr) {}
+coder::coder() : count(256, 0), ans(256), cur_bit(), root(nullptr) {}
 
 coder::~coder() {
     delete root;
@@ -28,22 +28,25 @@ std::string coder::get_tree() {
     return all;
 }
 
-void coder::code(size_t n, char *str, std::vector<char> &cur) {
+void coder::code(size_t n, char *str, std::vector<char> &bytes) {
     for (size_t i = 0; i < n; i++) {
-        auto v = ans[static_cast<uint8_t>(str[i])];
-        for (size_t j = 0; j < v.length(); j++) {
-            cur.push_back(v[j]);
-        }
+        cur_bit += ans[static_cast<uint8_t>(str[i])];
     }
-}
-
-std::string coder::long_code() {
-    for (size_t i = 0; i < 255; i++) {
-        if (ans[i].length() > 8) {
-            return ans[i];
+    for (size_t i = 0; i + 8 <= cur_bit.length(); i += 8) {
+        uint8_t c = 0;
+        for (size_t j = i; j < i + 8; j++) {
+            c *= 2;
+            if (cur_bit[j] == '1') {
+                c++;
+            }
         }
+        bytes.push_back(c);
     }
-    return ans[255];
+    std::string new_cur;
+    for (size_t i = (cur_bit.length() / 8 * 8); i < cur_bit.length(); i++) {
+        new_cur += cur_bit[i];
+    }
+    cur_bit = new_cur;
 }
 
 void coder::build_tree() {
@@ -63,6 +66,27 @@ void coder::build_tree() {
     root = set.begin()->second;
 }
 
+uint8_t coder::get_tail() {
+    std::string str = long_code();
+    uint8_t c = 0;
+    for (size_t i = 0; i < 8; i++) {
+        c *= 2;
+        if (i < cur_bit.length()) {
+            if (cur_bit[i] == '1') {
+                c++;
+            }
+        } else if (str[i - cur_bit.length()] == '1') {
+            c++;
+        }
+    }
+    cur_bit = "";
+    return c;
+}
+
+bool coder::has_tail() {
+    return cur_bit.length() > 0;
+}
+
 void coder::dfs(tree *cur, const std::string &cur_code) {
     if (cur->is_final) {
         ans[cur->symbol] = cur_code;
@@ -74,4 +98,14 @@ void coder::dfs(tree *cur, const std::string &cur_code) {
             dfs(cur->next_level.second, cur_code + "1");
         }
     }
+}
+
+
+std::string coder::long_code() {
+    for (size_t i = 0; i < 255; i++) {
+        if (ans[i].length() > 7) {
+            return ans[i];
+        }
+    }
+    return ans[255];
 }

@@ -7,6 +7,6 @@
 
 #include <string>
 
-void compress(std::string &file_in, std::string &file_out);
+int compress(std::string &file_in, std::string &file_out);
 
 #endif //UTILITY_COMPRESS_H

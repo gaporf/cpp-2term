@@ -5,62 +5,51 @@
 #include "test.h"
 #include <cstring>
 #include <vector>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <iostream>
 
+#include "file_reader.h"
+#include "file_writer.h"
 #include "compress.h"
 #include "decompress.h"
 
-bool coincidence(std::string first, std::string second) {
-    int32_t f1 = open(first.c_str(), O_RDONLY),
-            f2 = open(second.c_str(), O_RDONLY);
-    if (f1 == -1) {
-        std::cerr << "Could not open the file " << first << std::endl;
-        exit(1);
-    } else if (f2 == -1) {
-        std::cerr << "Could not open the file " << second << std::endl;
-        exit(1);
+int coincidence(std::string const &first, std::string const &second) {
+    file_reader f1(first),
+            f2(second);
+    if (!f1.is_open()) {
+        std::cerr << "Could not open_file the file " << first << std::endl;
+        return 2;
+    } else if (!f2.is_open()) {
+        std::cerr << "Could not open_file the file " << second << std::endl;
+        return 2;
     }
     const size_t N = 1024;
     for (;;) {
         std::vector<char> buf1(N),
                 buf2(N);
-        size_t n1 = read(f1, buf1.data(), N),
-                n2 = read(f2, buf2.data(), N);
-        if (n1 != n2) {
-            close(f1);
-            close(f2);
-            return false;
+        size_t n1 = f1.get_char(N, buf1.data()),
+                n2 = f2.get_char(N, buf2.data());
+        if (n1 != n2 || buf1 != buf2) {
+            return 0;
         } else if (n1 == 0) {
             break;
-        } else if (buf1 != buf2) {
-            close(f1);
-            close(f2);
-            return false;
         }
     }
-    close(f1);
-    close(f2);
-    return true;
+    return 1;
 }
 
-void get_random(std::string first) {
-    int32_t wd = open(first.c_str(), O_TRUNC | O_WRONLY);
+void get_random(std::string const &first) {
+    file_writer out(first);
     size_t N = 1024;
     for (size_t i = 0; i < N; i++) {
         std::vector<char> symbols(N);
         for (size_t j = 0; j < N; j++) {
             symbols[j] = rand() % 256;
         }
-        write(wd, symbols.data(), N);
+        out.put_char(N, symbols.data());
     }
-    close(wd);
 }
 
-void test(std::string first, std::string second) {
+int test(std::string first, std::string second) {
     srand(time(nullptr));
     std::string midle = "temp.txt";
     std::cout << "Start random tests" << std::endl;
@@ -68,12 +57,16 @@ void test(std::string first, std::string second) {
         get_random(first);
         compress(first, midle);
         decompress(midle, second);
-        if (!coincidence(first, second)) {
+        int check = coincidence(first, second);
+        if (check == 0) {
             std::cout << "Error" << std::endl;
-            exit(20);
-        } else {
+            return 0;
+        } else if (check == 1) {
             std::cout << "Ok" << std::endl;
+        } else {
+            return check;
         }
     }
     std::cout << "All random tests are completed!" << std::endl;
+    return 0;
 }

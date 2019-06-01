@@ -19,9 +19,11 @@ struct coder {
 
     std::string get_tree();
 
-    void code(size_t n, char *str, std::vector<char> &cur);
+    void code(size_t n, char *str, std::vector<char> &bytes);
 
-    std::string long_code();
+    uint8_t get_tail();
+
+    bool has_tail();
 
 private:
     void build_tree();
@@ -31,6 +33,11 @@ private:
     std::vector<size_t> count;
 
     std::vector<std::string> ans;
+
+    std::string cur_bit;
+
+    std::string long_code();
+
     tree *root;
 };
 

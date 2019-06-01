@@ -7,8 +7,8 @@
 
 #include <string>
 
-bool coincidence(std::string first, std::string second);
+int coincidence(std::string const &first, std::string const &second);
 
-void test(std::string first, std::string second);
+int test(std::string first, std::string second);
 
 #endif //UTILITY_TEST_H

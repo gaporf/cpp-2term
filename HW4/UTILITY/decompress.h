@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-void decompress(std::string &file_in, std::string &file_out);
+int decompress(std::string &file_in, std::string &file_out);
 
 std::string get_string(uint8_t c);
 
