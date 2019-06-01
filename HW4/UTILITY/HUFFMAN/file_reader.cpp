@@ -38,5 +38,6 @@ void file_reader::close_file() {
 }
 
 void file_reader::open_file(std::string const &file_name) {
+    close_file();
     fd = open(file_name.c_str(), O_RDONLY);
 }

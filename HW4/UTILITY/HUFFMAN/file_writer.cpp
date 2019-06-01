@@ -38,5 +38,6 @@ void file_writer::close_file() {
 }
 
 void file_writer::open_file(std::string const &file_name) {
+    close_file();
     fd = open(file_name.c_str(), O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 }
