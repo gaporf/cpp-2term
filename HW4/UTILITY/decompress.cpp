@@ -12,7 +12,7 @@
 #include "file_reader.h"
 #include "file_writer.h"
 
-int decompress(std::string &file_in, std::string &file_out) {
+int decompress(std::string const &file_in, std::string const &file_out) {
     file_reader in(file_in);
     if (!in.is_open()) {
         std::cerr << "Could not open_file the file " << file_in.c_str() << std::endl;
