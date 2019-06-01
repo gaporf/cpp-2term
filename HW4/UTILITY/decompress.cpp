@@ -34,6 +34,9 @@ int decompress(std::string const &file_in, std::string const &file_out) {
         size_t n = in.get_char(N, symbols.data());
         if (n == 0) {
             break;
+        } else if (n == -1) {
+            std::cerr << "Could not open the file " << file_in << std::endl;
+            return 2;
         }
         for (size_t i = 0; i < n; i++) {
             uint8_t c = symbols[i];

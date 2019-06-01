@@ -14,7 +14,7 @@
 int compress(std::string const &file_in, std::string const &file_out) {
     file_reader in(file_in);
     if (!in.is_open()) {
-        std::cerr << "Could not open_file the file " << file_in << std::endl;
+        std::cerr << "Could not open the file " << file_in << std::endl;
         return 2;
     }
     const size_t N = 1024;
@@ -24,6 +24,9 @@ int compress(std::string const &file_in, std::string const &file_out) {
         size_t n = in.get_char(N, symbols.data());
         if (n == 0) {
             break;
+        } else if (n == -1) {
+            std::cerr << "Could not open the file " << file_in << std::endl;
+            return 2;
         }
         data.add(n, symbols.data());
     }
@@ -38,7 +41,7 @@ int compress(std::string const &file_in, std::string const &file_out) {
     out.put_char(str.length(), str.c_str());
     in.open_file(file_in);
     if (!in.is_open()) {
-        std::cerr << "Could not open_file the file " << file_in << "std::endl";
+        std::cerr << "Could not open the file " << file_in << std::endl;
         return 2;
     }
     std::vector<char> cur;
@@ -46,6 +49,9 @@ int compress(std::string const &file_in, std::string const &file_out) {
         size_t n = in.get_char(N, symbols.data());
         if (n == 0) {
             break;
+        } else if (n == -1) {
+            std::cerr << "Could not open the file " << file_in << std::endl;
+            return 2;
         }
         data.code(n, symbols.data(), cur);
         if (!cur.empty()) {
