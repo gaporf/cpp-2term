@@ -16,9 +16,13 @@ struct decoder {
 
     ~decoder();
 
+    decoder &operator=(decoder const &rhs) = delete;
+
+    decoder(decoder const &rhs) = delete;
+
     int init(file_reader &fr);
 
-    std::pair<std::vector<char>, std::vector<char>> decode(const std::vector<char>& code);
+    std::pair<std::vector<char>, std::vector<char>> decode(const std::vector<char> &code);
 
 private:
     tree *root;

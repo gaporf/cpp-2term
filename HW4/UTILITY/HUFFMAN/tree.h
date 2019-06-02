@@ -12,7 +12,11 @@ struct tree {
 
     tree(tree *first, tree *second);
 
+    tree(tree const &rhs) = delete;
+
     ~tree();
+
+    tree& operator=(tree const &rhs) = delete;
 
     uint8_t symbol;
     bool is_final;

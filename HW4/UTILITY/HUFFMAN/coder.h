@@ -15,6 +15,10 @@ struct coder {
 
     ~coder();
 
+    coder(coder const &rhs) = delete;
+
+    coder &operator=(coder const &rhs) = delete;
+
     void add(size_t n, char *str);
 
     std::string get_tree();

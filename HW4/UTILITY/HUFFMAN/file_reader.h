@@ -12,6 +12,10 @@ struct file_reader {
 
     ~file_reader();
 
+    file_reader(file_reader const &rhs) = delete;
+
+    file_reader &operator=(file_reader const &rhs) = delete;
+
     size_t get_char(size_t N, char *buf);
 
     bool is_open();

@@ -10,8 +10,12 @@
 struct file_writer {
     explicit file_writer(std::string const &file_name);
 
+    file_writer(file_writer const &rhs) = delete;
+
     ~file_writer();
 
+    file_writer &operator=(file_writer const &rhs) = delete;
+    
     void close_file();
 
     bool is_open();
