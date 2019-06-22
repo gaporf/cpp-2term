@@ -1047,13 +1047,10 @@ TEST(exceptions, construct_iterator) {
         counted::no_new_instances_guard g;
         container_int c;
         c.reserve(10);
-
-        EXPECT_NO_THROW(
-        {
-            for (size_t i = 0; i != 10; ++i) {
-                c.push_back(42);
-            }
-        });
+        
+        for (size_t i = 0; i != 10; ++i) {
+            c.push_back(42);
+        }
         container_int d(c.begin(), c.end());
         for (size_t i = 0; i != 10; i++) {
             EXPECT_EQ(42, d[i]);
